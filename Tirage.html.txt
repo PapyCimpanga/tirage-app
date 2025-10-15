@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Application de Tirage</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: white;
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 500px;
+            background-color: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            text-align: center;
+        }
+        
+        h1 {
+            margin-bottom: 20px;
+            font-size: 28px;
+            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+        
+        h2 {
+            margin: 15px 0;
+            font-size: 22px;
+        }
+        
+        p {
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 12px 15px;
+            border: none;
+            border-radius: 10px;
+            background-color: rgba(255, 255, 255, 0.9);
+            font-size: 16px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        button {
+            background: linear-gradient(to right, #ff8a00, #da1b60);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            margin: 10px 0;
+            width: 100%;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        button:active {
+            transform: translateY(1px);
+        }
+        
+        .result {
+            margin: 20px 0;
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            font-size: 22px;
+            font-weight: bold;
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .page {
+            display: none;
+        }
+        
+        .active {
+            display: block;
+        }
+        
+        .admin-section {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .pair-item {
+            background-color: rgba(255, 255, 255, 0.15);
+            padding: 10px 15px;
+            margin: 8px 0;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .cancel-btn {
+            background: linear-gradient(to right, #ff416c, #ff4b2b);
+            padding: 8px 15px;
+            font-size: 14px;
+            width: auto;
+        }
+        
+        .error {
+            color: #ffcc00;
+            background-color: rgba(255, 204, 0, 0.2);
+            padding: 10px;
+            border-radius: 10px;
+            margin: 10px 0;
+            display: none;
+        }
+        
+        .success {
+            color: #4ade80;
+            background-color: rgba(74, 222, 128, 0.2);
+            padding: 10px;
+            border-radius: 10px;
+            margin: 10px 0;
+            display: none;
+        }
+        
+        .logo {
+            font-size: 40px;
+            margin-bottom: 10px;
+        }
+        
+        @media (max-width: 500px) {
+            .container {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 24px;
+            }
+            
+            h2 {
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Page d'accueil avec code d'accès -->
+        <div id="home-page" class="page active">
+            <div class="logo">🎁</div>
+            <h1>Application de Tirage</h1>
+            <p>Veuillez entrer votre code d'accès</p>
+            
+            <div class="input-group">
+                <label for="access-code">Code d'accès</label>
+                <input type="password" id="access-code" placeholder="Entrez votre code">
+            </div>
+            
+            <div id="code-error" class="error">
+                Code incorrect. Veuillez réessayer.
+            </div>
+            
+            <button id="validate-code">Valider</button>
+        </div>
+        
+        <!-- Page d'identification pour utilisateur simple -->
+        <div id="user-login-page" class="page">
+            <div class="logo">👤</div>
+            <h1>Identification</h1>
+            <p>Veuillez sélectionner votre nom</p>
+            
+            <div class="input-group">
+                <label for="user-name">Votre nom</label>
+                <select id="user-name">
+                    <option value="">Sélectionnez votre nom</option>
+                </select>
+            </div>
+            
+            <button id="validate-user">Valider</button>
+            <button id="back-to-home">Retour</button>
+        </div>
+        
+        <!-- Page de tirage pour utilisateur simple -->
+        <div id="draw-page" class="page">
+            <div class="logo">🎲</div>
+            <h1 id="welcome-message">Bienvenue</h1>
+            
+            <div class="result" id="draw-result">
+                Cliquez sur "Démarrer le tirage" pour commencer
+            </div>
+            
+            <button id="start-draw">Démarrer le tirage</button>
+            <button id="logout-user">Déconnexion</button>
+        </div>
+        
+        <!-- Page de confirmation après tirage -->
+        <div id="confirmation-page" class="page">
+            <div class="logo">✅</div>
+            <h1>Merci !</h1>
+            <p>Merci d'avoir effectué le tirage.</p>
+            <p id="draw-confirmation"></p>
+            
+            <button id="confirm-draw">Okay</button>
+        </div>
+        
+        <!-- Page d'administration -->
+        <div id="admin-page" class="page">
+            <div class="logo">🔧</div>
+            <h1>Espace Administrateur</h1>
+            <p>Gestion des tirages effectués</p>
+            
+            <div class="admin-section">
+                <h2>Tirages effectués</h2>
+                <div id="draws-list">
+                    <!-- Les tirages apparaîtront ici -->
+                </div>
+            </div>
+            
+            <button id="logout-admin">Déconnexion</button>
+        </div>
+    </div>
+
+    <script>
+        // Données initiales
+        const names = ["Melissa", "Arnold", "Papy", "Dorcas", "Mireille", "Guillain", "Prisca", "Héritier", "Gloria", "Kévin", "Carine", "Milli"];
+        const forbiddenPairs = [
+            ["Papy", "Dorcas"],
+            ["Dorcas", "Papy"],
+            ["Mireille", "Guillain"],
+            ["Guillain", "Mireille"],
+            ["Melissa", "Arnold"],
+            ["Arnold", "Melissa"],
+            ["Prisca", "Héritier"],
+            ["Héritier", "Prisca"],
+            ["Carine", "Milli"],
+            ["Milli", "Carine"],
+            ["Gloria", "Kévin"],
+            ["Kévin", "Gloria"]
+        ];
+        
+        // Codes d'accès
+        const USER_CODE = "0000";
+        const ADMIN_CODE = "0914";
+        
+        // État de l'application
+        let state = {
+            currentUser: null,
+            availableNames: [...names],
+            draws: [] // { user: "Nom", drawn: "Nom tiré" }
+        };
+        
+        // Initialisation
+        document.addEventListener('DOMContentLoaded', function() {
+            // Remplir la liste des noms
+            const userNameSelect = document.getElementById('user-name');
+            names.forEach(name => {
+                const option = document.createElement('option');
+                option.value = name;
+                option.textContent = name;
+                userNameSelect.appendChild(option);
+            });
+            
+            // Événements
+            document.getElementById('validate-code').addEventListener('click', validateCode);
+            document.getElementById('validate-user').addEventListener('click', validateUser);
+            document.getElementById('start-draw').addEventListener('click', startDraw);
+            document.getElementById('confirm-draw').addEventListener('click', confirmDraw);
+            document.getElementById('logout-user').addEventListener('click', logout);
+            document.getElementById('logout-admin').addEventListener('click', logout);
+            document.getElementById('back-to-home').addEventListener('click', backToHome);
+            
+            // Charger l'état depuis le localStorage
+            loadState();
+        });
+        
+        // Validation du code d'accès
+        function validateCode() {
+            const code = document.getElementById('access-code').value;
+            const errorDiv = document.getElementById('code-error');
+            
+            if (code === USER_CODE) {
+                errorDiv.style.display = 'none';
+                showPage('user-login-page');
+            } else if (code === ADMIN_CODE) {
+                errorDiv.style.display = 'none';
+                showAdminPage();
+            } else {
+                errorDiv.style.display = 'block';
+            }
+        }
+        
+        // Validation de l'utilisateur
+        function validateUser() {
+            const userName = document.getElementById('user-name').value;
+            
+            if (!userName) {
+                alert("Veuillez sélectionner votre nom");
+                return;
+            }
+            
+            // Vérifier si l'utilisateur a déjà effectué un tirage
+            const existingDraw = state.draws.find(draw => draw.user === userName);
+            if (existingDraw) {
+                alert("Vous avez déjà effectué un tirage. Vous ne pouvez pas en refaire un.");
+                return;
+            }
+            
+            state.currentUser = userName;
+            document.getElementById('welcome-message').textContent = `Bienvenue ${userName} pour le tirage`;
+            
+            // Réinitialiser l'affichage du résultat
+            document.getElementById('draw-result').textContent = "Cliquez sur \"Démarrer le tirage\" pour commencer";
+            
+            showPage('draw-page');
+        }
+        
+        // Démarrage du tirage
+        function startDraw() {
+            // Noms disponibles pour le tirage (exclure l'utilisateur courant)
+            let availableForDraw = state.availableNames.filter(name => name !== state.currentUser);
+            
+            // Exclure les noms interdits selon les paires
+            const forbiddenForUser = forbiddenPairs
+                .filter(pair => pair[0] === state.currentUser)
+                .map(pair => pair[1]);
+            
+            availableForDraw = availableForDraw.filter(name => !forbiddenForUser.includes(name));
+            
+            if (availableForDraw.length === 0) {
+                alert("Aucun nom disponible pour le tirage. Contactez l'administrateur.");
+                return;
+            }
+            
+            // Tirage aléatoire
+            const randomIndex = Math.floor(Math.random() * availableForDraw.length);
+            const drawnName = availableForDraw[randomIndex];
+            
+            // Mettre à jour l'état
+            state.draws.push({
+                user: state.currentUser,
+                drawn: drawnName
+            });
+            
+            // Retirer le nom tiré de la liste des disponibles
+            const nameIndex = state.availableNames.indexOf(drawnName);
+            if (nameIndex !== -1) {
+                state.availableNames.splice(nameIndex, 1);
+            }
+            
+            // Sauvegarder l'état
+            saveState();
+            
+            // Afficher le résultat
+            document.getElementById('draw-result').textContent = drawnName;
+            document.getElementById('draw-confirmation').textContent = `${state.currentUser} a tiré ${drawnName}`;
+            showPage('confirmation-page');
+        }
+        
+        // Confirmation du tirage
+        function confirmDraw() {
+            logout();
+        }
+        
+        // Déconnexion
+        function logout() {
+            state.currentUser = null;
+            document.getElementById('access-code').value = '';
+            document.getElementById('user-name').value = '';
+            showPage('home-page');
+        }
+        
+        // Retour à la page d'accueil
+        function backToHome() {
+            document.getElementById('access-code').value = '';
+            showPage('home-page');
+        }
+        
+        // Affichage de la page d'administration
+        function showAdminPage() {
+            const drawsList = document.getElementById('draws-list');
+            drawsList.innerHTML = '';
+            
+            if (state.draws.length === 0) {
+                drawsList.innerHTML = '<p>Aucun tirage effectué pour le moment.</p>';
+            } else {
+                state.draws.forEach((draw, index) => {
+                    const drawItem = document.createElement('div');
+                    drawItem.className = 'pair-item';
+                    drawItem.innerHTML = `
+                        <span>${draw.user} → ${draw.drawn}</span>
+                        <button class="cancel-btn" data-index="${index}">Annuler</button>
+                    `;
+                    drawsList.appendChild(drawItem);
+                });
+                
+                // Ajouter les événements pour les boutons d'annulation
+                document.querySelectorAll('.cancel-btn').forEach(button => {
+                    button.addEventListener('click', function() {
+                        const index = parseInt(this.getAttribute('data-index'));
+                        cancelDraw(index);
+                    });
+                });
+            }
+            
+            showPage('admin-page');
+        }
+        
+        // Annulation d'un tirage
+        function cancelDraw(index) {
+            const draw = state.draws[index];
+            
+            // Remettre le nom tiré dans la liste des disponibles
+            if (!state.availableNames.includes(draw.drawn)) {
+                state.availableNames.push(draw.drawn);
+            }
+            
+            // Supprimer le tirage
+            state.draws.splice(index, 1);
+            
+            // Sauvegarder l'état
+            saveState();
+            
+            // Recharger la page admin
+            showAdminPage();
+        }
+        
+        // Affichage d'une page spécifique
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            document.getElementById(pageId).classList.add('active');
+        }
+        
+        // Sauvegarde de l'état dans le localStorage
+        function saveState() {
+            localStorage.setItem('drawAppState', JSON.stringify(state));
+        }
+        
+        // Chargement de l'état depuis le localStorage
+        function loadState() {
+            const savedState = localStorage.getItem('drawAppState');
+            if (savedState) {
+                state = JSON.parse(savedState);
+            }
+        }
+    </script>
+</body>
+</html>
